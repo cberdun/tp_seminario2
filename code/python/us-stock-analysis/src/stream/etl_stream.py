@@ -48,7 +48,6 @@ def start_stream(brokers, topics, query_function, query_timeout):
         .format("kafka")
         .option("kafka.bootstrap.servers", ",".join(brokers))
         .option("subscribe", ",".join(topics))
-        .option("startingOffsets", "earliest")
         .load()
     )
 
@@ -221,17 +220,12 @@ def get_query_postgre_output_avg_price_windows(df):
 
     transformed_df = summarize_stocks(df)
 
-    window_start_ts_fn = F.udf(lambda w: w.start, TimestampType())
-    window_end_ts_fn = F.udf(lambda w: w.end, TimestampType())
-
     foreach_batch_writer = define_write_to_postgres(table_name)
 
     query = (
         transformed_df
-        # .withColumn("window_start", "window.start")
-        # .withColumn("window_end", "window.end")
-        .withColumn("window_start", window_start_ts_fn("window"))
-        .withColumn("window_end", window_end_ts_fn("window"))
+        .withColumn("window_start", F.col("window.start"))
+        .withColumn("window_end", F.col("window.end"))
         .drop("window")
         .writeStream
         .foreachBatch(foreach_batch_writer)
