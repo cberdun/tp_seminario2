@@ -115,17 +115,15 @@ Podemos consultar una posición cualquiera del log agregando las opciones `-oN` 
 
 #### Estructura de una conuslta Spark Structured Streaming
 
-Step 1: Define input sources
+Paso 1: Definir el input
 
 En una consola, ejecutamos el siguiente comando que va a ser el input de nuestro job
 ```bash
 nc -lk 9999
 ```
 
-En otra consla, iniciamos una sesión de Spark interactiva.
+En otra consola, iniciamos una sesión de Spark interactiva.
 ```bash
-docker exec -it worker1 bash
-
 pyspark --total-executor-cores 1 --executor-memory 512m --driver-memory 512m
 ```
 
@@ -140,20 +138,20 @@ lines = (
 )
 ```
 
-Step 2: Transform data
+Paso 2: Realizar las transformaciones
 
 ```python
 words = lines.select(F.explode(F.split(F.col("value"), "\\s")).alias("word"))
 counts = words.groupBy("word").count()
 ```
 
-Step 3: Define output sink and output mode (update, complete, append)
+Paso 3: Definir el output sink y el modo (update, complete, append)
 
 ```python
 writer = counts.writeStream.format("console").outputMode("complete")
 ```
 
-Step 4: Specify processing details (checkpoint y trigger)
+Paso 4: Especificar la configuración de procesamiento (checkpoint y trigger)
 
 ```python
 checkpoint_dir = "/tmp/streaming-exmaple"
@@ -164,18 +162,24 @@ writer = (
 )
 ```
 
-Step 5: Start the query
+Paso 5: Ejecutar la consulta
 
 ```python
 query = writer.start()
+query.awaitTermination()
 # escribir en la otra consola
+# CTRL + C para pausar
 query.stop()
+
 writer = (
     counts.writeStream.format("console").outputMode("update")
     .trigger(processingTime="1 second")
     .option("checkpointLocation", checkpoint_dir)
-  )
+)
+
 query = writer.start()
+query.awaitTermination()
+# CTRL + C para pausar
 # escribir en la otra consola
 query.stop()
 ```
@@ -356,7 +360,7 @@ Revise el código de la nueva función y observe las diferencias con el anterior
 Al igual que el punto anterior, una vez lanzada la aplicación puedes ir al tab de postgres y realizar una serie de consultas sobre los nuevos datos.
 
 ¿Qué ve de particular en la fecha de comienzo?  
-¿Cómo harías para reemplazar la `udf` con funciones propias de `pyspark`?
+Revisar el código para reemplazar la `udf` con funciones propias de `pyspark`
 
 ##### `query5 | Postgres Output | Average Price Aggregation with Timestamp columns`
 Tal como hicimos en las últimas 2 secciones, procedemos a crear la tabla donde van a persistirse los nuevos datos.
@@ -399,5 +403,3 @@ Una vez completados los pasos anteriores pruebe algunos de las siguientes modifi
 
 1. Agregue al job final lógica para que además de calcular el avg_price calcule el max de cada ventana.
 2. Agregue nuevas visualizaciones al dashboard de Superset y haga que se refresque cada 10 segundos.
-3. Modifica las funciones `stream_aggregation_to_postgres` y `stream_aggregation_to_postgres_final` en `etl_stream.py` para que usen funciones nativas de pyspark en lugar de `udf`.
-4. Agregue al `fake_stock_price_generator.py` lógica para generar un volumen para cada acción de manera artificial además del precio. Modifique los jobs de streaming para procesar este dato. 
