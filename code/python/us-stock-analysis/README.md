@@ -115,6 +115,75 @@ Podemos consultar una posición cualquiera del log agregando las opciones `-oN` 
 ### Procesamiento usando Spark Structured Streaming
 [Structured Streaming + Kafka Integration Guide](https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html#deploying)
 
+#### Estructura de una conuslta Spark Structured Streaming
+
+Step 1: Define input sources
+
+En una consola, ejecutamos el siguiente comando que va a ser el input de nuestro job
+```bash
+nc -lk 9999
+```
+
+En otra consla, iniciamos una sesión de Spark interactiva.
+```bash
+docker exec -it worker1 bash
+
+pyspark --total-executor-cores 1 --executor-memory 512m --driver-memory 512m
+```
+
+```python
+import pyspark.sql.functions as F
+
+lines = (
+    spark.readStream.format("socket")
+    .option("host", "localhost")
+    .option("port", 9999)
+    .load()
+)
+```
+
+Step 2: Transform data
+
+```python
+words = lines.select(F.explode(F.split(F.col("value"), "\\s")).alias("word"))
+counts = words.groupBy("word").count()
+```
+
+Step 3: Define output sink and output mode (update, complete, append)
+
+```python
+writer = counts.writeStream.format("console").outputMode("complete")
+```
+
+Step 4: Specify processing details (checkpoint y trigger)
+
+```python
+checkpoint_dir = "/tmp/streaming-exmaple"
+writer = (
+    writer
+    .trigger(processingTime="1 second")
+    .option("checkpointLocation", checkpoint_dir)
+)
+```
+
+Step 5: Start the query
+
+```python
+query = writer.start()
+# escribir en la otra consola
+query.stop()
+writer = (
+    counts.writeStream.format("console").outputMode("update")
+    .trigger(processingTime="1 second")
+    .option("checkpointLocation", checkpoint_dir)
+  )
+query = writer.start()
+# escribir en la otra consola
+query.stop()
+```
+
+#### US stocks
+
 Ya comprobado que tenemos datos en Kafka, pasaremos a procesar los mismos haciendo uso de Spark Structured Streaming.
 
 Vamos a trabajar con los siguientes escenarios:
