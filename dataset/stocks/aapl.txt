@@ -1,2 +1,0 @@
-,Date,symbol,Open,High,Low,Close,Volume
-0,2022-09-14,aapl,154.785,157.1,153.6106,155.31,87965409.0

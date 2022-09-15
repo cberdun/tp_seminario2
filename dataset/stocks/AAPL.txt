@@ -1,0 +1,2 @@
+Date,symbol,Open,High,Low,Close,Volume
+2022-09-14,AAPL,154.785,157.1,153.6106,155.31,87965409.0

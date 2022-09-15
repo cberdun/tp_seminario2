@@ -1,0 +1,2 @@
+Date,symbol,Open,High,Low,Close,Volume
+2022-09-14,BABA,89.46,89.78,88.17,88.92,10843634.0

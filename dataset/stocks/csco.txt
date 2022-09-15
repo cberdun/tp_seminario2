@@ -1,2 +1,0 @@
-,Date,symbol,Open,High,Low,Close,Volume
-0,2022-09-14,csco,44.04,44.27,43.5604,43.96,27551508.0
