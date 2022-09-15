@@ -1,0 +1,2 @@
+,Date,symbol,Open,High,Low,Close,Volume
+0,2022-09-14,meta,153.33,153.54,149.05,151.47,43064195.0

@@ -11,6 +11,9 @@ cd /app/python/us-stock-analysis
 
 # Envía el job para ser ejecutado
 spark-submit \
+  --total-executor-cores 1 \
+  --executor-memory 512m \
+  --driver-memory 512m \
   --master 'spark://master:7077' \
   --jars /app/postgresql-42.1.4.jar \
   src/batch/etl_steps.py \
@@ -20,6 +23,9 @@ spark-submit \
 
 # Console
 pyspark \
+  --total-executor-cores 1 \
+  --executor-memory 512m \
+  --driver-memory 512m \
   --master 'spark://master:7077' \
   --jars /app/postgresql-42.1.4.jar
 ```
@@ -28,10 +34,16 @@ pyspark \
 
 ```bash
 spark-submit \
+  --total-executor-cores 1 \
+  --executor-memory 512m \
+  --driver-memory 512m \
   --master 'spark://master:7077' \
   src/examples/first_example.py
 
 spark-submit \
+  --total-executor-cores 1 \
+  --executor-memory 512m \
+  --driver-memory 512m \
   --master 'spark://master:7077' \
   --jars /app/postgresql-42.1.4.jar \
   src/examples/postgres_example.py

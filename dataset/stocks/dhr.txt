@@ -1,0 +1,2 @@
+,Date,symbol,Open,High,Low,Close,Volume
+0,2022-09-14,dhr,282.29,287.4603,279.08,281.73,2973933.0
