@@ -1,34 +1,11 @@
-# Usando `pySpark`:
+#ANÁLISIS DE DEPARTAMENTOS DEL PAÍS Y SUCURSALES DE BANCOS
 
-## Consola
+El trabajo final integrador de la especialización consiste en el desarrollo de un modelo que describa y mida las correlaciones existentes entre datos demográficos y geográficos del negocio bancario y determine las reglas de localización de entidades financieras físicas. Se propone realizar un análisis de clúster con datos demográficos a fin de agrupar y caracterizar departamentos, para luego relevar con herramientas de sistemas de información geográfica (GIS) las correlaciones existentes. La comparación a nivel geográfico de las agrupaciones de departamentos y la presencia bancaria actual permitirá describir las reglas de correlación y sus variaciones geográficas.
 
-```bash
-docker exec -it master bash
-root@588acf96a879:/app# pyspark
-```
-```python
-file = spark.read.text("/dataset/yahoo-symbols-201709.csv")
-file.count()
-for line in file.take(10):
-  print(line)
-```
+Para el trabajo práctico presente, se realizará un análisis de los datos del dataset y se ensayará un modelo de regresión para estudiar si es posible estimar las localizaciones con los datos relevados.
 
-## Usando Jupyter Notebook
-Acceda al [Jupyter Notebook aqui](http://localhost:8888/), los notebook disponibles en ese workshop [están en Github](https://github.com/arjones/bigdata-workshop-es/tree/master/jupyter/notebook)
+##CARGA DE DATOS
+Se ingresa un dataset compilado a partir de datos del Censo de hogares del INDEC y la nómina de filiales de bancos del BCRA.
 
-## Material de lectura:
-
-* [Apache Spark in Python: Beginner's Guide](https://www.datacamp.com/community/tutorials/apache-spark-python)
-* [Introduction to PySpark](https://www.datacamp.com/courses/introduction-to-pyspark)
-* [pySpark: Evaluating the machine learning model](https://www.datacamp.com/community/tutorials/apache-spark-tutorial-machine-learning)
-
-
-## Visualización de Datos
-
-* [Python Data Visualization with Matplotlib](https://stackabuse.com/python-data-visualization-with-matplotlib/)
-* [Top 50 matplotlib Visualizations](https://www.machinelearningplus.com/plots/top-50-matplotlib-visualizations-the-master-plots-python/)
-* [Seaborn Library for Data Visualization in Python: Part 1](https://stackabuse.com/seaborn-library-for-data-visualization-in-python-part-1/)
-
-
-____
-Gustavo Arjones &copy; 2017-2019
+BANCO CENTRAL DE LA REPÚBLICA ARGENTINA (s.f. -b), Sucursales Plenas (a junio de 2023). Recuperado el 30/9/2023 de: https://www.bcra.gob.ar/SistemasFinancierosYdePagos/Entidades_financieras_filiales_y_cajeros.asp?bco=AAA00&tipo=1&Tit=1
+** Instituto Nacional de Estadística y Censos de la República Argentina (s.f. -c), INDEC: Censo 2022 - Indicadores de condiciones habitacionales de las viviendas particulares ocupadas. Recuperado el 30/9/2023 de: https://www.indec.gob.ar/indec/web/Institucional-Indec-BasesDeDatos-3
