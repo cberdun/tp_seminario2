@@ -1,5 +1,0 @@
-jupyter
-findspark
-pandas
-matplotlib
-seaborn
